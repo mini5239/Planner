@@ -1,0 +1,76 @@
+.inp
+  position: relative
+  margin: auto
+  width: 100%
+  max-width: 280px
+  .label
+    position: absolute
+    top: 16px
+    left: 0
+    font-size: 16px
+    color: #9098A9
+    font-weight: 500
+    transform-origin: 0 0
+    transition: all .2s ease
+  svg
+    position: absolute
+    left: 0
+    bottom: 0
+    height: 26px
+    fill: none
+    path
+      stroke: #C8CCD4
+      stroke-width: 2
+      d
+        transition: all .2s ease
+  .border
+    position: absolute
+    bottom: 0
+    left: 120px
+    height: 2px
+    right: 0
+    background #C8CCD4
+  input
+    -webkit-appearance: none
+    width: 100%
+    border: 0
+    font-family: inherit
+    padding: 12px 0
+    height: 48px
+    font-size: 16px
+    font-weight: 500
+    background: none
+    border-radius: 0
+    color: #223254
+    transition: all .15s ease
+    &:not(:placeholder-shown)
+      + span
+        color #5A667F
+        transform: translateY(-26px) scale(.75)
+    &:focus
+      background: none
+      outline: none
+      + span
+        color #0077FF
+        transform: translateY(-26px) scale(.75)
+        transition-delay: .1s
+        + svg
+          path
+            stroke: #0077FF
+            animation: elasticInput .4s ease forwards
+          + .border
+            background: #0077FF  
+      
+@keyframes elasticInput
+  50%
+    d: path("M2,2 C21,17 46,25 74,25 C102,25 118,25 120,25")
+    
+//dribbble 
+.dribbble
+  position: fixed
+  right: 20px
+  bottom: 15px
+  transition: all .2s ease
+  span
+    font-size: 28px
+    color: #9098A9
