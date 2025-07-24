@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, Link, useParams, useNavigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Link, useParams, useNavigate, Navigate } from 'react-router-dom';
 import styled from 'styled-components';
 import tinycolor from "https://cdn.skypack.dev/tinycolor2@1.4.2";
 import SimplexNoise from "https://cdn.skypack.dev/simplex-noise@2.4.0";
@@ -38,7 +38,7 @@ const DayName = styled.div`
 `;
 const Day = styled.div`
   border:1px solid #ddd;  padding:10px;  text-align:center; cursor:pointer;
-  background-color:${props => props.isSelected ? '#9f9ffa' : '#fff'};  position:relative;
+  background-color: ${props => props.$isSelected ? '#9f9ffa' : '#fff'};  position:relative;
   line-height: 42px;
 
   &:hover{ background-color:#ddd; }
@@ -73,8 +73,8 @@ const TodoCheckbox = styled.input`
 `;
 const TodoText = styled.span`
   flex-grow:1;
-  text-decoration:${props => props.completed ? 'line-through' : 'none'};
-  font-style:${props => props.completed ? 'italic' : 'normal'};
+  text-decoration: ${props => props.$completed ? 'line-through' : 'none'};
+  font-style: ${props => props.$completed ? 'italic' : 'normal'};
   margin-top:1.1rem;
 `;
 
@@ -148,7 +148,7 @@ const CalendarTodo = () => {
       const todoForDay = todos[dateString] || [];
       return (
         <Day key={index}
-          isSelected={isSelected}
+          $isSelected={isSelected}
           onClick={() => clickDate(day)}>
           {day}
           {todoForDay.length > 0 && (<TodoIndicator>{todoForDay.length}</TodoIndicator>)}
@@ -170,12 +170,12 @@ const CalendarTodo = () => {
 
 
   return (
-    <body>
+    <>
 
       <CalendarContainer className='main_container'>
         <CalendarHeader>
-          <div class="buttons">
-            <button class="button" onClick={() => changeMonth(-1)}>
+          <div className="buttons">
+            <button className="button" onClick={() => changeMonth(-1)}>
               <span>이전 달</span>
             </button>
           </div>
@@ -185,8 +185,8 @@ const CalendarTodo = () => {
               <option key={month} value={month}>{month} 월</option>
             ))}
           </MonthSelect>
-          <div class="buttons">
-            <button class="button" onClick={() => changeMonth(1)}>
+          <div className="buttons">
+            <button className="button" onClick={() => changeMonth(1)}>
               <span>다음 달</span>
             </button>
           </div>
@@ -202,7 +202,7 @@ const CalendarTodo = () => {
         <TodoList todos={todos} addTodo={addTodo} removeTodo={removeTodo} toggleTodo={toggleTodo}
           editTodo={editTodo} selectedDate={selectedDate} />
       </CalendarContainer>
-    </body>
+    </>
   )
 }
 
@@ -231,28 +231,28 @@ const TodoList = ({ todos, addTodo, removeTodo, editTodo, selectedDate, toggleTo
   return (
     <TodoListContainer>
       <section>
-        <div class="c1"></div>
-        <div class="c2"></div>
-        <div class="c3"></div>
-        <div class="c4"></div>
+        <div className="c1"></div>
+        <div className="c2"></div>
+        <div className="c3"></div>
+        <div className="c4"></div>
       </section>
       <section>
         <h3>계획 추가하기</h3>
       </section>
       <TodoForm onSubmit={sendSubmit}>
-        <label for="inp" class="inp">
+        <label htmlFor="inp" className="inp">
           <input type="text" id="inp" placeholder="&nbsp;" value={newTodo} onChange={(e) => setNewTodo(e.target.value)} />
-          <span class="label"></span>
+          <span className="label"></span>
           <svg width="120px" height="26px" viewBox="0 0 120 26">
             <path d="M0,25 C21,25 46,25 74,25 C102,25 118,25 120,25"></path>
           </svg>
-          <span class="border"></span>
+          <span className="border"></span>
         </label>
         <Button type="submit">
-          <a class="bt more-bt" href="javascript:void(0)">
-            <span class="fl"></span><span class="sfl"></span><span class="cross"></span><i></i>
+          <span className="bt more-bt">
+            <span className="fl"></span><span className="sfl"></span><span className="cross"></span><i></i>
             <p>add</p>
-          </a>
+          </span>
         </Button>
       </TodoForm>
       {selectedDate && (
@@ -269,7 +269,7 @@ const TodoList = ({ todos, addTodo, removeTodo, editTodo, selectedDate, toggleTo
                   <TodoCheckbox type="checkbox" checked={todo.completed} onChange={() => {
                     toggleTodo(selectedDate, index);
                   }} />
-                  <TodoText id="todotext" completed={todo.completed}>{todo.text}</TodoText>
+                  <TodoText id="todotext" $completed={todo.completed}>{todo.text}</TodoText>
                   <Button id="edit" onClick={() => editCall(index, todo.text)}><span>수정</span></Button>
                   <Button id="del" onClick={() => removeTodo(selectedDate, index)}><span>삭제</span></Button>
                 </>
@@ -498,30 +498,43 @@ function map(n, start1, end1, start2, end2) {
 })();
 
 function App() {
-  return (
+  const today = new Date();
+  const year = today.getFullYear();
+  const month = today.getMonth() + 1;
+ return (
     <Router>
       <div>
         <nav>
           <ul>
-            <li><Link to="/"><span class="stripe1">
-              INTRO
-            </span></Link></li>
-            <li><Link to="/calendar/2024/8"><span class="stripe2">
-            Calendar Plan
-            </span></Link></li>
+            <li>
+              <Link to={`/calendar/${year}/${month}`}>
+                <span className="stripe2">Calendar Plan</span>
+              </Link>
+            </li>
           </ul>
         </nav>
       </div>
-      <Routes>
-        <Route exact path='/' element={<IntroPage />} />
-        <Route path='/calendar/:year/:month' element={<CalendarTodo />} />
+  <Routes>
+        <Route path="/" element={<Navigate to={`/calendar/${year}/${month}`} replace />} />
+        <Route path="/Planner" element={<Navigate to={`/calendar/${year}/${month}`} replace />} />
+        <Route path="/calendar/:year/:month" element={<CalendarTodo />} />
       </Routes>
     </Router>
   );
 }
-const IntroPage = () => {
-  return <h1 data-text="달력 일정 페이지">달력 일정 페이지</h1>
 
-}
+
+const AutoRedirect = () => {
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = today.getMonth() + 1;
+    navigate(`/calendar/${year}/${month}`);
+  }, [navigate]);
+
+  return null;
+};
 
 export default App;
